@@ -70,109 +70,125 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-primary bg-gradient">
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-12 col-md-6 col-lg-5 col-xl-4">
-            <div className="card shadow-lg border-0 rounded-4">
-              <div className="card-body p-5">
-                {/* Logo */}
-                <div className="text-center mb-4">
-                  <div className="d-inline-flex align-items-center justify-content-center bg-primary bg-gradient rounded-circle p-3 shadow">
-                    <i className="bi bi-person-circle text-white" style={{ fontSize: '3rem' }}></i>
-                  </div>
-                </div>
-
-                {/* Title */}
-                <h2 className="text-center fw-bold mb-2 text-primary">Welcome Back</h2>
-                <p className="text-center text-muted mb-4">Please login to your account</p>
-
-                {/* Form */}
-                <form onSubmit={handleSubmit}>
-                  {/* Email Input */}
-                  <div className="mb-3">
-                    <label htmlFor="email" className="form-label fw-semibold">
-                      <i className="bi bi-envelope me-2"></i>Email Address
-                    </label>
-                    <input
-                      type="email"
-                      className="form-control form-control-lg"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="your.email@example.com"
-                      required
-                    />
-                  </div>
-
-                  {/* Password Input */}
-                  <div className="mb-4">
-                    <label htmlFor="password" className="form-label fw-semibold">
-                      <i className="bi bi-lock me-2"></i>Password
-                    </label>
-                    <div className="input-group">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        className="form-control form-control-lg"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="••••••••"
-                        required
-                      />
-                      <button
-                        className="btn btn-outline-secondary"
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? "Hide password" : "Show password"}
-                      >
-                        <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`}></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-                  <div className="d-grid">
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-lg fw-semibold"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                          Logging in...
-                        </>
-                      ) : (
-                        <>
-                          <i className="bi bi-box-arrow-in-right me-2"></i>
-                          Login
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
-
-                {/* Register Link */}
-                <div className="text-center mt-4">
-                  <p className="text-muted mb-0">
-                    Don't have an account?{' '}
-                    <Link to="/register" className="text-primary fw-semibold text-decoration-none">
-                      Register here
-                    </Link>
-                  </p>
-                </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900">
+      <div className="w-full max-w-md px-6">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="p-8">
+            {/* Logo */}
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-700 rounded-full p-4 shadow-lg">
+                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
               </div>
             </div>
 
-            {/* Footer Text */}
-            <p className="text-center text-white mt-4 mb-0">
-              <small>&copy; 2026 Your Company. All rights reserved.</small>
-            </p>
+            {/* Title */}
+            <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+            <p className="text-center text-gray-500 mb-8">Please login to your account</p>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Email Input */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="your.email@example.com"
+                  required
+                />
+              </div>
+
+              {/* Password Input */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 outline-none"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Logging in...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Login
+                  </span>
+                )}
+              </button>
+            </form>
+
+            {/* Register Link */}
+            <div className="text-center mt-6">
+              <p className="text-gray-600">
+                Don't have an account?{' '}
+                <Link to="/register" className="text-blue-600 font-semibold hover:text-blue-700 transition">
+                  Register here
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
+
+        {/* Footer Text */}
+        <p className="text-center text-white text-sm mt-6">
+          &copy; 2026 TaskFlow. All rights reserved.
+        </p>
       </div>
     </div>
   );
