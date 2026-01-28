@@ -1,7 +1,11 @@
 import { useNavigate } from 'react-router'
+import { useState } from 'react'
+import http from '../helpers/http'
+import Swal from 'sweetalert2'
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onStatusUpdate }) {
   const navigate = useNavigate()
+  const [isUpdating, setIsUpdating] = useState(false)
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -11,6 +15,47 @@ export default function ProjectCard({ project }) {
         return 'bg-blue-100 text-blue-700 border-blue-300'
       default:
         return 'bg-yellow-100 text-yellow-700 border-yellow-300'
+    }
+  }
+
+  const handleStatusClick = async (e) => {
+    e.stopPropagation()
+    
+    if (isUpdating) return
+
+    const statusOptions = ['Not Started', 'On Progress', 'Done']
+    const currentIndex = statusOptions.indexOf(project.status)
+    const nextStatus = statusOptions[(currentIndex + 1) % statusOptions.length]
+
+    try {
+      setIsUpdating(true)
+      await http({
+        method: 'PATCH',
+        url: `/projects/${project.id}/status`,
+        data: { status: nextStatus },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        }
+      })
+
+      if (onStatusUpdate) onStatusUpdate()
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Status Updated!',
+        text: `Status changed to "${nextStatus}"`,
+        timer: 1500,
+        showConfirmButton: false
+      })
+    } catch (err) {
+      console.error(err)
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to update status',
+        text: err.response?.data?.message || 'Something went wrong'
+      })
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -32,10 +77,15 @@ export default function ProjectCard({ project }) {
         
         {/* Footer Section */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          {/* Status Badge */}
-          <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(project.status)}`}>
-            {project.status}
-          </span>
+          {/* Status Badge - Clickable */}
+          <button
+            onClick={handleStatusClick}
+            disabled={isUpdating}
+            className={`px-3 py-1 rounded-full text-xs font-bold border transition-all duration-200 ${getStatusColor(project.status)} ${isUpdating ? 'opacity-50 cursor-wait' : 'hover:scale-110 hover:shadow-md cursor-pointer'}`}
+            title="Click to change status"
+          >
+            {isUpdating ? 'Updating...' : project.status}
+          </button>
           
           {/* Open Button */}
           <button 
