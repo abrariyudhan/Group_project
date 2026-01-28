@@ -9,20 +9,28 @@ class ActivityController {
 
             const activity = await Activity.findByPk(activityId)
             if (!activity) throw { name: "NotFound", message: "Activity not found" }
-            
+
             const isMember = await Project_User.findOne({
-                where: { projectId: activity.projectId, userId: userId }
+                where: { projectId: activity.projectId, userId }
             })
-            
+
             if (!isMember) {
                 throw { name: "Forbidden", message: "You must join this project to update tasks" }
             }
-            
+
             if (activity.todoStatus === 'Done') {
-                throw { name: "BadRequest", message: "Activity already completed" }
+                if (activity.userId && activity.userId !== userId) {
+                    throw { name: "Forbidden", message: "Only the person who started this task can finish it!" };
+                }
             }
 
-            await activity.update({ todoStatus })
+            const updatePayload = { todoStatus }
+
+            if (todoStatus === 'On Progress') {
+                updatePayload.userId = userId
+            }
+
+            await activity.update(updatePayload)
 
             res.status(200).json({
                 message: `Activity updated to ${todoStatus}`,

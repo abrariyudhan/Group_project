@@ -50,7 +50,7 @@ class ProjectController {
                     { model: Activity },
                     {
                         model: User,
-                        attributes: ['id', 'email'],
+                        attributes: ['id', 'email', 'username'],
                         through: { attributes: [] }
                     }
                 ]

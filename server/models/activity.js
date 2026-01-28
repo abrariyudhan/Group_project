@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Activity.belongsTo(models.Project, { foreignKey: 'projectId' });
+      Activity.belongsTo(models.Project, { foreignKey: 'projectId' })
+      Activity.belongsTo(models.User, { foreignKey: 'userId' })
     }
   }
   Activity.init({
@@ -39,6 +40,10 @@ module.exports = (sequelize, DataTypes) => {
         notNull: { msg: 'Status is required' },
         notEmpty: { msg: 'Status is required' }
       }
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,
