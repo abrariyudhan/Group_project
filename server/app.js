@@ -39,6 +39,8 @@ io.on('connection', (socket) => {
   })
 })
 
+app.set('io', io)
+
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 

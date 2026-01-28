@@ -32,24 +32,30 @@ export default function HomePage() {
 
     return (
         <div className="container mx-auto p-6">
-            <header className="flex justify-between items-center mb-10">
+            {/* Header */}
+            <header className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-10">
                 <div>
                     <h1 className="text-3xl font-bold">My Projects</h1>
-                    <p className="text-gray-500">Welcome back! Manage your tasks here.</p>
+                    <p className="text-gray-500">
+                        Welcome back! Manage your tasks here.
+                    </p>
                 </div>
 
-                <button 
-                    className="btn btn-primary shadow-md"
-                    onClick={() => navigate('/ai-generate')}
-                >
-                    + New AI Project
-                </button>
-                                <button 
-                    className="btn btn-primary shadow-md"
-                    onClick={() => navigate('/create-project')}
-                >
-                    + New Project
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        className="btn btn-primary shadow-md"
+                        onClick={() => navigate('/ai-generate')}
+                    >
+                        + New AI Project
+                    </button>
+
+                    <button
+                        className="btn btn-primary shadow-md"
+                        onClick={() => navigate('/create-project')}
+                    >
+                        + New Project
+                    </button>
+                </div>
             </header>
 
             {projects.length === 0 ? (
