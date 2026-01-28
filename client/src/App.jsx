@@ -4,7 +4,8 @@ import RegisterPage from "./pages/RegisterPage.jsx"
 import HomePage from "./pages/HomePage.jsx"
 import ProjectDetail from "./pages/ProjectDetail.jsx"
 import CreateProjectPage from "./pages/CreateProjectPage.jsx"
-import ProjectsPage from "./pages/ProjectPage.jsx"
+import ProjectsListPage from "./pages/ProjectsListPage.jsx"
+import AIGeneratePage from "./pages/AIGeneratePage.jsx"
 import { AuthProtected, PublicOnly } from "./components/AuthGuard.jsx"
 
 
@@ -27,9 +28,10 @@ function App() {
           <Route element={<AuthProtected />}>
 
             <Route path="/" element={<HomePage />} />
+            <Route path="/ai-generate" element={<AIGeneratePage />} />
             <Route path="/projects/:projectId" element={<ProjectDetail />} />
             <Route path="/create-project" element={<CreateProjectPage />} />
-            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects" element={<ProjectsListPage />} />
 
           </Route>
 
