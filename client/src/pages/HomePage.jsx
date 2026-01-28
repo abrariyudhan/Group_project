@@ -55,14 +55,5 @@ export default function HomePage() {
             )}
         </div>
 
-    return (
-        <>
-        <Navbar />
-        <div className="container mt-5">
-            <h1>Welcome to Go Flow</h1>
-            <p>Your project management solution</p>
-        </div>
-        </>
-
-    )
+        )
 }
