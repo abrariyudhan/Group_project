@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 
-const {hashPassword} = require('../helpers/bcrypt');
+const { hashPassword } = require('../helpers/bcrypt');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.belongsToMany(models.Project, { through: models.Project_User, foreignKey: 'userId' } );
+      User.belongsToMany(models.Project, { through: models.Project_User, foreignKey: 'userId' });
     }
   }
   User.init({
@@ -39,6 +39,15 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: { msg: 'Role is required' },
         notEmpty: { msg: 'Role is required' }
+      }
+    },
+
+    username: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        notEmpty: false,
+        notNull: false
       }
     }
   }, {
