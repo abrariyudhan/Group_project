@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
-import axios from 'axios';
 import Swal from 'sweetalert2';
-import url from '../helpers/url';
+import http from '../helpers/http';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -37,7 +36,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${url}/register`, {
+      const response = await http.post(`/register`, {
         email: formData.email,
         password: formData.password,
         role: formData.role
