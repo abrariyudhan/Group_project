@@ -2,6 +2,31 @@ const { generateProjectTemplate } = require('../helpers/geminiAi');
 const { Project, Activity, User, Project_User } = require('../models');
 
 class ProjectController {
+
+    static async createProject(req, res, next) {
+        try {
+            const userId = req.user.id
+            const { name, description } = req.body
+
+            const newProject = await Project.create({
+                name,
+                description,
+                status: 'Not Started'
+            })
+
+            await Project_User.create({
+                userId: userId,
+                projectId: newProject.id
+            })
+
+            res.status(201).json(newProject)
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    }
+
+
     static async getProjects(req, res, next) {
         try {
             const userId = req.user.id
