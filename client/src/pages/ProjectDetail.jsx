@@ -43,26 +43,27 @@ export default function ProjectDetail() {
     }
 
     useEffect(() => {
-        fetchProjectDetail()
-
-        // 1. Join project saat masuk halaman
-        socket.emit('joinProject', projectId)
-
-        // 2. Dengerin kalau ada kabar update dari user lain
-        socket.on('taskUpdated', (payload) => {
+        if (projectId) {
             fetchProjectDetail()
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                title: payload.message,
-                showConfirmButton: false,
-                timer: 100000
+
+            socket.emit('joinProject', projectId)
+
+            socket.on('taskUpdated', (payload) => {
+                fetchProjectDetail()
+
+                Swal.fire({
+                    toast: true,
+                    position: 'bottom-end',
+                    icon: 'info',
+                    title: payload.message,
+                    showConfirmButton: false,
+                    timer: 30000
+                })
             })
-        })
+        }
 
         return () => {
-            socket.emit('leaveProject', projectId)
-            socket.off('taskUpdated') // Bersihkan listener saat pindah page
+            socket.off('taskUpdated')
         }
     }, [projectId])
 
@@ -129,7 +130,7 @@ export default function ProjectDetail() {
                                 {isMember && activity.todoStatus !== 'Done' && (
                                     <>
                                         {activity.todoStatus === 'On Progress' && activity.userId !== Number(localStorage.getItem('userId')) ? (
-                                            <span className="text-xs text-gray-400 italic">Worked on by others</span>
+                                            <span className="text-xs text-gray-400 italic">Worked on by {activity.User.username || 'someone'}</span>
                                         ) : (
                                             <button
                                                 onClick={() => handleUpdateStatus(activity.id, activity.todoStatus, activity.todo)}

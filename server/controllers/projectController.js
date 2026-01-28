@@ -4,52 +4,52 @@ const { Project, Activity, User, Project_User } = require('../models');
 class ProjectController {
 
     static async createProject(req, res, next) {
-    try {
-        const userId = req.user.id // Ambil userId dari middleware authentication
-        const { name, description, activities } = req.body // Destructure data dari request body
+        try {
+            const userId = req.user.id // Ambil userId dari middleware authentication
+            const { name, description, activities } = req.body // Destructure data dari request body
 
-        // Validasi input - name dan description wajib ada
-        if (!name || !description) {
-            throw { name: "BadRequest", message: "Name and description are required" }
-        }
-
-        // 1. Buat project baru di database
-        const newProject = await Project.create({
-            name,
-            description,
-            status: 'Not Started' // Default status
-        })
-
-        // 2. Hubungkan user dengan project (many-to-many relationship)
-        await Project_User.create({
-            userId: userId,
-            projectId: newProject.id
-        })
-
-        // 3. Buat activities jika ada
-        if (activities && Array.isArray(activities) && activities.length > 0) {
-            // Filter: hapus activity yang kosong (hanya whitespace)
-            const activitiesData = activities
-                .filter(task => task.trim() !== '') // trim() = hapus whitespace
-                .map(task => ({
-                    projectId: newProject.id, // FK ke project yang baru dibuat
-                    todo: task, // Isi activity
-                    todoStatus: 'Not Started' // Default status activity
-                }));
-
-            // Buat multiple activities sekaligus jika ada data
-            if (activitiesData.length > 0) {
-                await Activity.bulkCreate(activitiesData);
-                // bulkCreate = insert multiple rows sekaligus (lebih efisien dari looping create)
+            // Validasi input - name dan description wajib ada
+            if (!name || !description) {
+                throw { name: "BadRequest", message: "Name and description are required" }
             }
-        }
 
-        res.status(201).json(newProject) // Return project yang baru dibuat
-    } catch (err) {
-        console.log(err);
-        next(err) // Pass error ke error handler middleware
+            // 1. Buat project baru di database
+            const newProject = await Project.create({
+                name,
+                description,
+                status: 'Not Started' // Default status
+            })
+
+            // 2. Hubungkan user dengan project (many-to-many relationship)
+            await Project_User.create({
+                userId: userId,
+                projectId: newProject.id
+            })
+
+            // 3. Buat activities jika ada
+            if (activities && Array.isArray(activities) && activities.length > 0) {
+                // Filter: hapus activity yang kosong (hanya whitespace)
+                const activitiesData = activities
+                    .filter(task => task.trim() !== '') // trim() = hapus whitespace
+                    .map(task => ({
+                        projectId: newProject.id, // FK ke project yang baru dibuat
+                        todo: task, // Isi activity
+                        todoStatus: 'Not Started' // Default status activity
+                    }));
+
+                // Buat multiple activities sekaligus jika ada data
+                if (activitiesData.length > 0) {
+                    await Activity.bulkCreate(activitiesData);
+                    // bulkCreate = insert multiple rows sekaligus (lebih efisien dari looping create)
+                }
+            }
+
+            res.status(201).json(newProject) // Return project yang baru dibuat
+        } catch (err) {
+            console.log(err);
+            next(err) // Pass error ke error handler middleware
+        }
     }
-}
 
 
     static async getProjects(req, res, next) {
@@ -72,7 +72,13 @@ class ProjectController {
 
             const project = await Project.findByPk(projectId, {
                 include: [
-                    { model: Activity },
+                    {
+                        model: Activity,
+                        include: {
+                            model: User,
+                            attributes: ['id', 'username']
+                        }
+                    },
                     {
                         model: User,
                         attributes: ['id', 'email', 'username'],
@@ -93,12 +99,26 @@ class ProjectController {
         try {
             const { projectId } = req.params
             const userId = req.user.id
+            const username = req.user.username
 
-            await Project_User.findOrCreate({
+            const project = await Project.findByPk(projectId)
+            if (!project) throw { name: "NotFound", message: "Project not found" }
+
+            const [membership, created] = await Project_User.findOrCreate({
                 where: { projectId, userId }
             })
 
-            res.status(201).json({ message: "Successfully joined project" })
+            if (created) {
+                const io = req.app.get('io')
+                if (io) {
+                    io.to(`project-${projectId}`).emit('taskUpdated', {
+                        message: `${username} has joined "${project.name}" project.`
+                    })
+                }
+                return res.status(201).json({ message: "Successfully joined project" })
+            } else {
+                return res.status(200).json({ message: "You are already a member of this project" })
+            }
         } catch (err) {
             next(err)
         }
@@ -146,7 +166,7 @@ class ProjectController {
         }
     }
 
-        static async deleteProject(req, res, next) {
+    static async deleteProject(req, res, next) {
         try {
             const { projectId } = req.params // Ambil projectId dari URL parameter
             const userId = req.user.id // Ambil userId dari authentication
@@ -173,16 +193,16 @@ class ProjectController {
             await project.destroy()
 
             // 5. Response success
-            res.status(200).json({ 
+            res.status(200).json({
                 message: "Project successfully deleted",
-                deletedProject: project.name 
+                deletedProject: project.name
             })
         } catch (err) {
             next(err)
         }
     }
 
-        static async updateProject(req, res, next) {
+    static async updateProject(req, res, next) {
         try {
             const { projectId } = req.params
             const userId = req.user.id

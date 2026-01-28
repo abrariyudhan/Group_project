@@ -47,12 +47,12 @@ export default function ProjectCard({ project, onDelete }) {
         timer: 1500,
         showConfirmButton: false
       })
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      console.error(error)
       Swal.fire({
         icon: 'error',
         title: 'Failed to update status',
-        text: err.response?.data?.message || 'Something went wrong'
+        text: error.response.data.message || 'Something went wrong'
       })
     } finally {
       setIsUpdating(false)

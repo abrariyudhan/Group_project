@@ -9,7 +9,7 @@ export default function RegisterPage() {
     username: '',
     email: '',
     password: '',
-    role: 'user'
+    role: 'Owner'
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
