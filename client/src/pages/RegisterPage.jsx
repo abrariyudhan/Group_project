@@ -6,6 +6,7 @@ import http from '../helpers/http';
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
     password: '',
     role: 'user'
@@ -23,11 +24,11 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.email || !formData.password) {
+    if (!formData.username || !formData.email || !formData.password) {
       Swal.fire({
         icon: 'warning',
         title: 'Incomplete Form',
-        text: 'Email and Password are required',
+        text: 'Username, Email and Password are required',
         confirmButtonColor: '#0d6efd'
       });
       return;
@@ -37,6 +38,7 @@ export default function RegisterPage() {
 
     try {
       const response = await http.post(`/register`, {
+        username: formData.username,
         email: formData.email,
         password: formData.password,
         role: formData.role
@@ -45,7 +47,7 @@ export default function RegisterPage() {
       await Swal.fire({
         icon: 'success',
         title: 'Registration Successful!',
-        text: `Account created for ${response.data.email}`,
+        text: `Account created for ${formData.username}`,
         timer: 2000,
         showConfirmButton: false,
         timerProgressBar: true
@@ -87,6 +89,22 @@ export default function RegisterPage() {
 
                 {/* Form */}
                 <form onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label htmlFor="username" className="form-label fw-semibold">
+                      <i className="bi bi-envelope me-2"></i>Username
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control form-control-lg"
+                      id="username"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      placeholder="your.username"
+                      required
+                    />
+                  </div>
+
                   {/* Email Input */}
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label fw-semibold">

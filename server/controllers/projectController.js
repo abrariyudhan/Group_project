@@ -32,13 +32,6 @@ class ProjectController {
             const userId = req.user.id
 
             const projects = await Project.findAll({
-                include: [
-                    {
-                        model: User,
-                        where: { id: userId },
-                        attributes: []
-                    }
-                ],
                 order: [['createdAt', 'DESC']]
             })
 
@@ -53,12 +46,34 @@ class ProjectController {
             const { projectId } = req.params
 
             const project = await Project.findByPk(projectId, {
-                include: [Activity]
+                include: [
+                    { model: Activity },
+                    {
+                        model: User,
+                        attributes: ['id', 'email'],
+                        through: { attributes: [] }
+                    }
+                ]
             })
 
             if (!project) throw { name: "NotFound", message: "Project not found" }
 
             res.status(200).json(project)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async joinProject(req, res, next) {
+        try {
+            const { projectId } = req.params
+            const userId = req.user.id
+
+            await Project_User.findOrCreate({
+                where: { projectId, userId }
+            })
+
+            res.status(201).json({ message: "Successfully joined project" })
         } catch (err) {
             next(err)
         }

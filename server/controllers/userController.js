@@ -28,7 +28,11 @@ class Controller {
                 throw { name: "Unauthorized", message: "Invalid email or password" }
             }
             const access_token = signToken({ id: user.id })
-            res.status(200).json({ access_token })
+            res.status(200).json({
+                access_token,
+                id: user.id,
+                email: user.email
+            })
         } catch (err) {
             next(err)
         }
