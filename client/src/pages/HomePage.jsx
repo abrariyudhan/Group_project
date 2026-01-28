@@ -31,26 +31,19 @@ export default function HomePage() {
     }, [])
 
     return (
-        <div className="container mx-auto p-6">
-            <header className="flex justify-between items-center mb-10">
-                <div>
-                    <h1 className="text-3xl font-bold">My Projects</h1>
-                    <p className="text-gray-500">Welcome back! Manage your tasks here.</p>
-                </div>
-
-                <button 
-                    className="btn btn-primary shadow-md"
-                    onClick={() => navigate('/ai-generate')}
-                >
-                    + New AI Project
-                </button>
-                                <button 
-                    className="btn btn-primary shadow-md"
-                    onClick={() => navigate('/create-project')}
-                >
-                    + New Project
-                </button>
-            </header>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="container mx-auto px-6 py-10">
+                {/* Header Section */}
+                <div className="bg-white rounded-2xl shadow-lg p-8 mb-10 border border-gray-100">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div>
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mb-2">
+                                My Projects
+                            </h1>
+                            <p className="text-gray-600 text-lg">
+                                Welcome back! Manage your tasks and collaborate with your team.
+                            </p>
+                        </div>
 
                         <button 
                             className="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transform transition hover:scale-105 flex items-center"
