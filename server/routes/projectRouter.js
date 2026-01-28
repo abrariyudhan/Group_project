@@ -7,5 +7,7 @@ router.post('/', ProjectController.createProject)
 router.post('/generate-ai', ProjectController.generateAiProject)
 router.post('/:projectId/join', ProjectController.joinProject)
 router.get('/:projectId', ProjectController.getProjectDetail)
+router.put('/:projectId', ProjectController.updateProject)
+router.delete('/:projectId', ProjectController.deleteProject)
 
 module.exports = router

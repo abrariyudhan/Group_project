@@ -44,6 +44,12 @@ export default function HomePage() {
                 >
                     + New AI Project
                 </button>
+                                <button 
+                    className="btn btn-primary shadow-md"
+                    onClick={() => navigate('/create-project')}
+                >
+                    + New Project
+                </button>
             </header>
 
             {projects.length === 0 ? (
