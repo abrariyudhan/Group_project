@@ -4,9 +4,9 @@ const UserController = require('../controllers/userController');
 const authenticate = require('../middlewares/authentication.js')
 const ProjectRouter = require('./projectRouter.js');
 
-router.use('/projects', authenticate, ProjectRouter)
 
 router.post('/register', UserController.register)
 router.post('/login', UserController.login)
+router.use('/projects', authenticate, ProjectRouter)
 
 module.exports = router
