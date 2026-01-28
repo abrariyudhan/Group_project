@@ -56,7 +56,7 @@ export default function ProjectDetail() {
                 position: 'top-end',
                 title: payload.message,
                 showConfirmButton: false,
-                timer: 3000
+                timer: 100000
             })
         })
 
@@ -77,7 +77,7 @@ export default function ProjectDetail() {
 
             socket.emit('updateTask', {
                 projectId,
-                message: `Someone updated "${taskName}" to ${nextStatus}`
+                message: `${localStorage.getItem('username')} updated "${taskName}" to ${nextStatus}`
             })
 
             fetchProjectDetail()

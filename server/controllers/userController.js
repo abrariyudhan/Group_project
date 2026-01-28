@@ -5,9 +5,9 @@ const { User } = require('../models')
 class Controller {
     static async register(req, res, next) {
         try {
-            const { email, password, role } = req.body
-            const newUser = await User.create({ email, password, role })
-            res.status(201).json({ id: newUser.id, email: newUser.email, role: newUser.role })
+            const { username, email, password, role } = req.body
+            const newUser = await User.create({ username, email, password, role })
+            res.status(201).json({ id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role })
         } catch (err) {
             next(err)
         }
@@ -31,7 +31,7 @@ class Controller {
             res.status(200).json({
                 access_token,
                 id: user.id,
-                email: user.email
+                username: user.username
             })
         } catch (err) {
             next(err)

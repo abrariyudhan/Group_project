@@ -42,6 +42,7 @@ export default function LoginPage() {
       
       localStorage.setItem('access_token', response.data.access_token);
       localStorage.setItem('userId', response.data.id)
+      localStorage.setItem('username', response.data.username)
       
       await Swal.fire({
         icon: 'success',

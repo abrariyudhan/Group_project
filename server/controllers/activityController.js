@@ -1,4 +1,4 @@
-const { Activity } = require("../models");
+const { Activity, Project_User } = require("../models");
 
 class ActivityController {
     static async updateStatus(req, res, next) {
