@@ -11,7 +11,7 @@ class ActivityController {
             if (!activity) throw { name: "NotFound", message: "Activity not found" }
             
             const isMember = await Project_User.findOne({
-                where: { projectId: activity.projectId, userId }
+                where: { projectId: activity.projectId, userId: userId }
             })
             
             if (!isMember) {

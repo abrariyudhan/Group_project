@@ -96,10 +96,20 @@ export default function ProjectDetail() {
                 <div>
                     <h1 className="text-4xl font-extrabold text-gray-800">{project.name}</h1>
                     <p className="text-gray-600 mt-2">{project.description}</p>
+                
+                <div className="mt-4 flex flex-wrap gap-2">
+                        <span className="text-sm font-semibold text-gray-500 mr-2">Contributors:</span>
+                        {project?.Users?.map(user => (
+                            <div key={user.id} className="badge badge-outline badge-primary">
+                                {user.email === localStorage.getItem('user_email') ? 'You' : user.email}
+                            </div>
+                        ))}
+                    </div>
                 </div>
+
                 {!isMember && (
-                    <button onClick={handleJoin} className="btn btn-secondary shadow-lg">
-                        Join Project to Contribute
+                    <button onClick={handleJoin} className="btn btn-secondary animate-pulse">
+                        Join to Participate
                     </button>
                 )}
             </div>
@@ -112,7 +122,7 @@ export default function ProjectDetail() {
                                 <p className={`text-lg ${activity.todoStatus === 'Done' ? 'line-through text-gray-400' : ''}`}>
                                     {activity.todo}
                                 </p>
-                                <span className="badge badge-ghost mt-2">{activity.todoStatus}</span>
+                                <span className="badge badge-ghost mt-2 text-dark">{activity.todoStatus}</span>
                             </div>
 
                             <div className="flex gap-2">
