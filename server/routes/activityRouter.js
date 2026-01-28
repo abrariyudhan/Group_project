@@ -2,6 +2,6 @@ const express = require('express')
 const router = express.Router()
 const ActivityController = require("../controllers/activityController")
 
-router.get('/:activityId/start', ActivityController.startActivity)
+router.patch('/:activityId', ActivityController.updateStatus)
 
 module.exports = router

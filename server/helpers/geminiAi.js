@@ -11,7 +11,7 @@ async function generateProjectTemplate(prompt) {
             contents: `User ingin membuat project dengan topik: "${prompt}".
             Buatkan template project manajemen yang terdiri dari Nama Project, Deskripsi, dan daftar Activity (To-do list).
             
-            OUTPUT HARUS DALAM FORMAT JSON MURNI (MINIFIED), TANPA BACKTICKS ATAU TEKS LAINNYA.
+            OUTPUT HARUS DALAM FORMAT JSON MURNI (MINIFIED), TANPA BACKTICKS ATAU TEKS LAINNYA. DESKRIPSI HARUS SINGKAT DAN JELAS (TIDAK BOLEH LEBIH DARI 200 CHARACTERS)
             Struktur JSON:
             {
                 "name": "Nama Project",
