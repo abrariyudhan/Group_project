@@ -9,6 +9,7 @@ export default function Navbar() {
 
     // logout handler
     const handleLogout = () => {
+        localStorage.removeItem('access_token')
         Swal.fire({
             icon: 'success',
             title: 'Logged out',
@@ -66,13 +67,14 @@ export default function Navbar() {
 
                 {/* RIGHT SIDE - Logout Button */}
                 <div className="d-flex align-items-center">
+                    <Link to="/login">
                     <button
                         onClick={handleLogout} // logout handler
-                        className="btn btn-outline-light"
+                        className="btn btn-outline-light" to="/login"
                     >
                         <i className="bi bi-box-arrow-right me-2"></i>
                         Logout
-                    </button>
+                    </button></Link>
                 </div>
             </div>
         </nav>
