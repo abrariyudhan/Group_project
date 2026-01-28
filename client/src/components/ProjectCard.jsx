@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router'
-import { useState } from 'react'
 import http from '../helpers/http'
 import Swal from 'sweetalert2'
 
-export default function ProjectCard({ project, onStatusUpdate }) {
+export default function ProjectCard({ project, onDelete }) {
   const navigate = useNavigate()
   const [isUpdating, setIsUpdating] = useState(false)
 
@@ -59,44 +58,87 @@ export default function ProjectCard({ project, onStatusUpdate }) {
     }
   }
 
+  const handleDelete = async (e) => {
+    e.stopPropagation()
+
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to delete "${project.name}"? This action cannot be undone!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    })
+
+    if (!result.isConfirmed) return
+
+    try {
+      await http.delete(`/projects/${project.id}`, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('access_token')}`
+        }
+      })
+
+      Swal.fire({
+        title: 'Deleted!',
+        text: `"${project.name}" has been deleted.`,
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      })
+
+      if (onDelete) {
+        onDelete(project.id)
+      }
+    } catch (error) {
+      console.error(error)
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to delete project. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+    }
+  }
+
   return (
-    <div className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden transform hover:-translate-y-1">
-      {/* Card Header with Gradient */}
-      <div className="h-2 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700"></div>
-      
-      <div className="p-6">
-        {/* Project Title */}
-        <h2 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors line-clamp-1">
-          {project.name}
-        </h2>
-        
-        {/* Project Description */}
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
-          {project.description}
-        </p>
-        
-        {/* Footer Section */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          {/* Status Badge - Clickable */}
-          <button
-            onClick={handleStatusClick}
-            disabled={isUpdating}
-            className={`px-3 py-1 rounded-full text-xs font-bold border transition-all duration-200 ${getStatusColor(project.status)} ${isUpdating ? 'opacity-50 cursor-wait' : 'hover:scale-110 hover:shadow-md cursor-pointer'}`}
-            title="Click to change status"
-          >
-            {isUpdating ? 'Updating...' : project.status}
-          </button>
-          
-          {/* Open Button */}
-          <button 
-            onClick={() => navigate(`/projects/${project.id}`)}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 flex items-center"
-          >
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            Open Board
-          </button>
+    <div className="card w-full bg-base-100 shadow-xl border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
+      <div className="card-body">
+        <h2 className="card-title text-primary">{project.name}</h2>
+        <p className="text-sm text-gray-600 line-clamp-2">{project.description}</p>
+
+        <div className="flex justify-between items-center mt-4">
+          <span className={`badge text-dark ${project.status === 'Done' ? 'badge-success' : 'badge-warning'}`}>
+            {project.status}
+          </span>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate(`/projects/${project.id}`)}
+              className="btn btn-sm btn-outline btn-primary"
+            >
+              Open Board
+            </button>
+
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate(`/projects/${project.id}/edit`)
+              }}
+              className="btn btn-sm btn-outline btn-warning"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="btn btn-sm btn-outline btn-error"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>

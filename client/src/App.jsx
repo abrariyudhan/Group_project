@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage.jsx"
 import ProjectDetail from "./pages/ProjectDetail.jsx"
 import CreateProjectPage from "./pages/CreateProjectPage.jsx"
 import ProjectsListPage from "./pages/ProjectsListPage.jsx"
+import EditProjectPage from "./pages/EditProject.jsx"
 import AIGeneratePage from "./pages/AIGeneratePage.jsx"
 import { AuthProtected, PublicOnly } from "./components/AuthGuard.jsx"
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/projects/:projectId" element={<ProjectDetail />} />
             <Route path="/create-project" element={<CreateProjectPage />} />
             <Route path="/projects" element={<ProjectsListPage />} />
+            <Route path="/projects/:projectId/edit" element={<EditProjectPage />} />
 
           </Route>
 
