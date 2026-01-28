@@ -9,6 +9,7 @@ const socket = io('http://localhost:3000')
 export default function ProjectDetail() {
     const { projectId } = useParams()
     const [project, setProject] = useState(null)
+    const [isMember, setIsMember] = useState(false)
     const [loading, setLoading] = useState(true)
 
     const fetchProjectDetail = async () => {
@@ -17,10 +18,27 @@ export default function ProjectDetail() {
                 headers: { authorization: `Bearer ${localStorage.getItem('access_token')}` }
             })
             setProject(data)
+
+            const currentUserId = localStorage.getItem('userId')
+            const checkMember = data.Users?.some(u => u.id == currentUserId)
+
+            setIsMember(checkMember)
         } catch (error) {
             Swal.fire('Error', 'Failed to fetch project details', 'error')
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handleJoin = async () => {
+        try {
+            await http.post(`/projects/${projectId}/join`, {}, {
+                headers: { authorization: `Bearer ${localStorage.getItem('access_token')}` }
+            })
+            Swal.fire('Success', 'You are now a contributor!', 'success');
+            fetchProjectDetail()
+        } catch (error) {
+            Swal.fire('Error', 'Failed to join', 'error')
         }
     }
 
@@ -74,37 +92,34 @@ export default function ProjectDetail() {
 
     return (
         <div className="container mx-auto p-6">
-            <div className="mb-8">
-                <h1 className="text-4xl font-extrabold text-gray-800">{project.name}</h1>
-                <p className="text-gray-600 mt-2">{project.description}</p>
+            <div className="flex justify-between items-start mb-8">
+                <div>
+                    <h1 className="text-4xl font-extrabold text-gray-800">{project.name}</h1>
+                    <p className="text-gray-600 mt-2">{project.description}</p>
+                </div>
+                {!isMember && (
+                    <button onClick={handleJoin} className="btn btn-secondary shadow-lg">
+                        Join Project to Contribute
+                    </button>
+                )}
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-                <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                    <h2 className="text-xl font-semibold text-gray-700">Activities / To-do List</h2>
-                </div>
-
+            <div className="bg-white rounded-xl shadow-lg border border-gray-100">
                 <div className="divide-y divide-gray-100">
                     {project.Activities.map((activity) => (
-                        <div key={activity.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                        <div key={activity.id} className="p-6 flex items-center justify-between">
                             <div className="flex-1">
-                                <p className={`text-lg ${activity.todoStatus === 'Done' ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                                <p className={`text-lg ${activity.todoStatus === 'Done' ? 'line-through text-gray-400' : ''}`}>
                                     {activity.todo}
                                 </p>
-                                <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-full mt-2 inline-block ${activity.todoStatus === 'On Progress' ? 'bg-blue-100 text-blue-600' :
-                                    activity.todoStatus === 'Done' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'
-                                    }`}>
-                                    {activity.todoStatus}
-                                </span>
+                                <span className="badge badge-ghost mt-2">{activity.todoStatus}</span>
                             </div>
 
                             <div className="flex gap-2">
-                                {activity.todoStatus !== 'Done' && (
+                                {isMember && activity.todoStatus !== 'Done' && (
                                     <button
                                         onClick={() => handleUpdateStatus(activity.id, activity.todoStatus, activity.todo)}
-                                        disabled={activity.todoStatus === 'Done'}
-                                        className={`btn btn-sm ${activity.todoStatus === 'On Progress' ? 'btn-success' : 'btn-primary'
-                                            }`}
+                                        className={`btn btn-sm ${activity.todoStatus === 'On Progress' ? 'btn-success' : 'btn-primary'}`}
                                     >
                                         {activity.todoStatus === 'Not Started' ? 'Start Task' : 'Finish Task'}
                                     </button>
