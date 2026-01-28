@@ -96,12 +96,12 @@ export default function ProjectDetail() {
                 <div>
                     <h1 className="text-4xl font-extrabold text-gray-800">{project.name}</h1>
                     <p className="text-gray-600 mt-2">{project.description}</p>
-                
-                <div className="mt-4 flex flex-wrap gap-2">
+
+                    <div className="mt-4 flex flex-wrap gap-2">
                         <span className="text-sm font-semibold text-gray-500 mr-2">Contributors:</span>
-                        {project?.Users?.map(user => (
-                            <div key={user.id} className="badge badge-outline badge-primary">
-                                {user.email === localStorage.getItem('user_email') ? 'You' : user.email}
+                        {project.Users.map(user => (
+                            <div key={user.id} className="text-dark badge badge-outline badge-primary">
+                                {user.username === localStorage.getItem('username') ? 'You' : user.username}
                             </div>
                         ))}
                     </div>
@@ -127,12 +127,18 @@ export default function ProjectDetail() {
 
                             <div className="flex gap-2">
                                 {isMember && activity.todoStatus !== 'Done' && (
-                                    <button
-                                        onClick={() => handleUpdateStatus(activity.id, activity.todoStatus, activity.todo)}
-                                        className={`btn btn-sm ${activity.todoStatus === 'On Progress' ? 'btn-success' : 'btn-primary'}`}
-                                    >
-                                        {activity.todoStatus === 'Not Started' ? 'Start Task' : 'Finish Task'}
-                                    </button>
+                                    <>
+                                        {activity.todoStatus === 'On Progress' && activity.userId !== Number(localStorage.getItem('userId')) ? (
+                                            <span className="text-xs text-gray-400 italic">Worked on by others</span>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleUpdateStatus(activity.id, activity.todoStatus, activity.todo)}
+                                                className={`btn btn-sm ${activity.todoStatus === 'On Progress' ? 'btn-success' : 'btn-primary'}`}
+                                            >
+                                                {activity.todoStatus === 'Not Started' ? 'Start Task' : 'Finish Task'}
+                                            </button>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>
