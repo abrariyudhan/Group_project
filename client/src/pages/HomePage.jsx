@@ -4,6 +4,7 @@ import showError from "../helpers/errors"
 import { useEffect } from "react"
 import http from "../helpers/http"
 import ProjectCard from "../components/ProjectCard"
+import Swal from "sweetalert2"
 
 export default function HomePage() {
     const [projects, setProjects] = useState([])
@@ -37,7 +38,10 @@ export default function HomePage() {
                     <p className="text-gray-500">Welcome back! Manage your tasks here.</p>
                 </div>
 
-                <button className="btn btn-primary shadow-md">
+                <button 
+                    className="btn btn-primary shadow-md"
+                    onClick={() => navigate('/ai-generate')}
+                >
                     + New AI Project
                 </button>
             </header>

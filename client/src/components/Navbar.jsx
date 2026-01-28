@@ -53,8 +53,8 @@ export default function Navbar() {
                         </Link>
                     )}
 
-                    {/* My Project Button tanpa link di halaman projects */}
-                    {location.pathname !== '/projects' && (
+                    {/* My Project Button - hidden di halaman projects dan project detail */}
+                    {location.pathname !== '/projects' && !location.pathname.startsWith('/projects/') && (
                         <Link
                             to="/projects" // updated to /projects
                             className="btn btn-outline-light"
