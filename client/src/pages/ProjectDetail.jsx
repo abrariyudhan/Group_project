@@ -111,7 +111,7 @@ export default function ProjectDetail() {
 
                             <h1 className="text-4xl font-bold text-gray-900 mb-3">{project.name}</h1>
                             <p className="text-gray-600 text-lg mb-4">{project.description}</p>
-                        
+
                             <div className="flex flex-wrap items-center gap-3">
                                 <span className="text-sm font-bold text-gray-700 flex items-center">
                                     <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
@@ -130,46 +130,46 @@ export default function ProjectDetail() {
                                     ))}
                                 </div>
                             </div>
-                        ))}
+                        </div>
                     </div>
+
+                    {!isMember && (
+                        <button onClick={handleJoin} className="btn btn-secondary animate-pulse">
+                            Join to Participate
+                        </button>
+                    )}
                 </div>
 
-                {!isMember && (
-                    <button onClick={handleJoin} className="btn btn-secondary animate-pulse">
-                        Join to Participate
-                    </button>
-                )}
-            </div>
+                <div className="bg-white rounded-xl shadow-lg border border-gray-100">
+                    <div className="divide-y divide-gray-100">
+                        {project.Activities.map((activity) => (
+                            <div key={activity.id} className="p-6 flex items-center justify-between">
+                                <div className="flex-1">
+                                    <p className={`text-lg ${activity.todoStatus === 'Done' ? 'line-through text-gray-400' : ''}`}>
+                                        {activity.todo}
+                                    </p>
+                                    <span className="badge badge-ghost mt-2 text-dark">{activity.todoStatus}</span>
+                                </div>
 
-            <div className="bg-white rounded-xl shadow-lg border border-gray-100">
-                <div className="divide-y divide-gray-100">
-                    {project.Activities.map((activity) => (
-                        <div key={activity.id} className="p-6 flex items-center justify-between">
-                            <div className="flex-1">
-                                <p className={`text-lg ${activity.todoStatus === 'Done' ? 'line-through text-gray-400' : ''}`}>
-                                    {activity.todo}
-                                </p>
-                                <span className="badge badge-ghost mt-2 text-dark">{activity.todoStatus}</span>
+                                <div className="flex gap-2">
+                                    {isMember && activity.todoStatus !== 'Done' && (
+                                        <>
+                                            {activity.todoStatus === 'On Progress' && activity.userId !== Number(localStorage.getItem('userId')) ? (
+                                                <span className="text-xs text-gray-400 italic">Worked on by {activity.User.username || 'someone'}</span>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleUpdateStatus(activity.id, activity.todoStatus, activity.todo)}
+                                                    className={`btn btn-sm ${activity.todoStatus === 'On Progress' ? 'btn-success' : 'btn-primary'}`}
+                                                >
+                                                    {activity.todoStatus === 'Not Started' ? 'Start Task' : 'Finish Task'}
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                             </div>
-
-                            <div className="flex gap-2">
-                                {isMember && activity.todoStatus !== 'Done' && (
-                                    <>
-                                        {activity.todoStatus === 'On Progress' && activity.userId !== Number(localStorage.getItem('userId')) ? (
-                                            <span className="text-xs text-gray-400 italic">Worked on by {activity.User.username || 'someone'}</span>
-                                        ) : (
-                                            <button
-                                                onClick={() => handleUpdateStatus(activity.id, activity.todoStatus, activity.todo)}
-                                                className={`btn btn-sm ${activity.todoStatus === 'On Progress' ? 'btn-success' : 'btn-primary'}`}
-                                            >
-                                                {activity.todoStatus === 'Not Started' ? 'Start Task' : 'Finish Task'}
-                                            </button>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
