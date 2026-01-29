@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import Swal from 'sweetalert2'
 import http from '../helpers/http'
 import { io } from 'socket.io-client'
+import { UserContext } from '../context/userContext'
 
 const socket = io('http://localhost:3000')
 
@@ -12,6 +13,8 @@ export default function ProjectDetail() {
     const [isMember, setIsMember] = useState(false)
     const [loading, setLoading] = useState(true)
 
+    const { user: currentUser } = useContext(UserContext)
+
     const fetchProjectDetail = async () => {
         try {
             const { data } = await http.get(`/projects/${projectId}`, {
@@ -19,8 +22,7 @@ export default function ProjectDetail() {
             })
             setProject(data)
 
-            const currentUserId = localStorage.getItem('userId')
-            const checkMember = data.Users?.some(u => u.id == currentUserId)
+            const checkMember = data.Users.some(u => Number(u.id) == Number(currentUser.id))
 
             setIsMember(checkMember)
         } catch (error) {
@@ -65,7 +67,7 @@ export default function ProjectDetail() {
         return () => {
             socket.off('taskUpdated')
         }
-    }, [projectId])
+    }, [projectId, currentUser.id])
 
     const handleUpdateStatus = async (activityId, currentStatus, taskName) => {
         try {
@@ -78,7 +80,7 @@ export default function ProjectDetail() {
 
             socket.emit('updateTask', {
                 projectId,
-                message: `${localStorage.getItem('username')} updated "${taskName}" to ${nextStatus}`
+                message: `${currentUser.username} updated "${taskName}" to ${nextStatus}`
             })
 
             fetchProjectDetail()
@@ -114,23 +116,23 @@ export default function ProjectDetail() {
                         <div className="flex-1">
                             <h1 className="text-3xl font-bold text-gray-800 mb-2">{project.name}</h1>
                             <p className="text-gray-600 mb-3">{project.description}</p>
-                            
+
                             <div className="flex flex-wrap items-center gap-2">
                                 <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                                 <span className="text-sm font-semibold text-gray-700">Contributors:</span>
-                                {project.Users.map(user => (
-                                    <span key={user.id} className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full border border-blue-200">
-                                        {user.username === localStorage.getItem('username') ? '👤 You' : user.username}
+                                {project.Users.map(u => (
+                                    <span key={u.id} className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full border border-blue-200">
+                                        {u.id === currentUser.id ? 'You' : u.username}
                                     </span>
                                 ))}
                             </div>
                         </div>
 
                         {!isMember && (
-                            <button 
-                                onClick={handleJoin} 
+                            <button
+                                onClick={handleJoin}
                                 className="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transform transition hover:scale-105 animate-pulse flex items-center gap-2"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,7 +218,7 @@ export default function ProjectDetail() {
                                                 {activity.User.username}
                                             </p>
                                         )}
-                                        {isMember && activity.userId === Number(localStorage.getItem('userId')) && (
+                                        {isMember && activity.userId === Number(currentUser.id) && (
                                             <button
                                                 onClick={() => handleUpdateStatus(activity.id, activity.todoStatus, activity.todo)}
                                                 className="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2"
@@ -273,4 +275,5 @@ export default function ProjectDetail() {
             </div>
         </div>
     )
+
 }
