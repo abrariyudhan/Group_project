@@ -1,4 +1,4 @@
-const { Activity, Project_User } = require("../models");
+const { Activity, Project, Project_User } = require("../models");
 
 class ActivityController {
     static async updateStatus(req, res, next) {
@@ -32,9 +32,33 @@ class ActivityController {
 
             await activity.update(updatePayload)
 
+            const allActivities = await Activity.findAll({
+                where: { projectId: activity.projectId }
+            })
+
+            let nextProjectStatus = 'On Progress'
+
+            const totalActivities = allActivities.length
+            const doneCount = allActivities.filter(a => a.todoStatus === 'Done').length
+            const notStartedCount = allActivities.filter(a => a.todoStatus === 'Not Started').length
+
+            if (doneCount === totalActivities) {
+                nextProjectStatus = 'Done'
+            } else if (notStartedCount === totalActivities) {
+                nextProjectStatus = 'Not Started'
+            } else {
+                nextProjectStatus = 'On Progress'
+            }
+
+            await Project.update(
+                { status: nextProjectStatus },
+                { where: { id: activity.projectId } }
+            )
+
             res.status(200).json({
-                message: `Activity updated to ${todoStatus}`,
-                activity
+                message: `Activity updated to ${todoStatus} and Project status updated to ${nextProjectStatus}`,
+                activity,
+                projectStatus: nextProjectStatus
             })
         } catch (err) {
             next(err)
