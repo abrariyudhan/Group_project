@@ -3,7 +3,7 @@ import http from '../helpers/http'
 import Swal from 'sweetalert2'
 import { useState } from 'react'
 
-export default function ProjectCard({ project, onDelete }) {
+export default function ProjectCard({ project, onDelete, fetchProjects }) {
   const navigate = useNavigate()
 
   const handleDelete = async (e) => {
@@ -28,6 +28,10 @@ export default function ProjectCard({ project, onDelete }) {
           authorization: `Bearer ${localStorage.getItem('access_token')}`
         }
       })
+
+      if (fetchProjects) {
+        fetchProjects()
+      }
 
       Swal.fire({
         title: 'Deleted!',
