@@ -92,43 +92,17 @@ export default function ProjectDetail() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-            {/* Header */}
-            <div className="bg-white border-b-4 border-blue-600 shadow-md">
-                <div className="container mx-auto px-6 py-8">
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                        <div className="flex-1">
-                            {/* Back Button */}
-                            <button
-                                onClick={() => navigate('/')}
-                                className="flex items-center text-blue-600 hover:text-blue-700 font-semibold mb-4 transition"
-                            >
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
-                                Back to Projects
-                            </button>
+        <div className="container mx-auto p-6">
+            <div className="flex justify-between items-start mb-8">
+                <div>
+                    <h1 className="text-4xl font-extrabold text-gray-800">{project.name}</h1>
+                    <p className="text-gray-600 mt-2">{project.description}</p>
 
-                            <h1 className="text-4xl font-bold text-gray-900 mb-3">{project.name}</h1>
-                            <p className="text-gray-600 text-lg mb-4">{project.description}</p>
-                        
-                            <div className="flex flex-wrap items-center gap-3">
-                                <span className="text-sm font-bold text-gray-700 flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                                    </svg>
-                                    Contributors:
-                                </span>
-                                <div className="flex flex-wrap gap-2">
-                                    {project?.Users?.map(user => (
-                                        <div key={user.id} className="flex items-center bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold border-2 border-blue-300 shadow-sm">
-                                            <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                            </svg>
-                                            {user.email === localStorage.getItem('user_email') ? 'You' : user.username || user.email}
-                                        </div>
-                                    ))}
-                                </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        <span className="text-sm font-semibold text-gray-500 mr-2">Contributors:</span>
+                        {project.Users.map(user => (
+                            <div key={user.id} className="text-dark badge badge-outline badge-primary">
+                                {user.username === localStorage.getItem('username') ? 'You' : user.username}
                             </div>
                         ))}
                     </div>
