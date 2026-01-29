@@ -246,6 +246,25 @@ class ProjectController {
         }
     }
 
+    static async updateProjectStatus(req, res, next) {
+        try {
+            const { projectId } = req.params
+            const { status } = req.body
+
+            const project = await Project.findByPk(projectId)
+            if (!project) throw { name: "NotFound", message: "Project not found" }
+
+            await project.update({ status })
+
+            res.status(200).json({
+                message: "Project status updated successfully",
+                project
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
 }
 
 module.exports = ProjectController
