@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import Swal from 'sweetalert2'
 import http from '../helpers/http'
 import { io } from 'socket.io-client'
+import { UserContext } from '../context/userContext'
 
 const socket = io('http://localhost:3000')
 
@@ -12,6 +13,8 @@ export default function ProjectDetail() {
     const [isMember, setIsMember] = useState(false)
     const [loading, setLoading] = useState(true)
 
+    const { user: currentUser } = useContext(UserContext)
+
     const fetchProjectDetail = async () => {
         try {
             const { data } = await http.get(`/projects/${projectId}`, {
@@ -19,8 +22,7 @@ export default function ProjectDetail() {
             })
             setProject(data)
 
-            const currentUserId = localStorage.getItem('userId')
-            const checkMember = data.Users?.some(u => u.id == currentUserId)
+            const checkMember = data.Users.some(u => Number(u.id) == Number(currentUser.id))
 
             setIsMember(checkMember)
         } catch (error) {
@@ -65,7 +67,7 @@ export default function ProjectDetail() {
         return () => {
             socket.off('taskUpdated')
         }
-    }, [projectId])
+    }, [projectId, currentUser.id])
 
     const handleUpdateStatus = async (activityId, currentStatus, taskName) => {
         try {
@@ -78,7 +80,7 @@ export default function ProjectDetail() {
 
             socket.emit('updateTask', {
                 projectId,
-                message: `${localStorage.getItem('username')} updated "${taskName}" to ${nextStatus}`
+                message: `${currentUser.username} updated "${taskName}" to ${nextStatus}`
             })
 
             fetchProjectDetail()
@@ -88,22 +90,8 @@ export default function ProjectDetail() {
     }
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
-                <div className="text-center">
-                    <svg className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <p className="text-gray-600 font-medium">Loading project...</p>
-                </div>
-            </div>
-        )
+        return <div>Loading...</div>
     }
-
-    const notStartedTasks = project.Activities.filter(a => a.todoStatus === 'Not Started')
-    const onProgressTasks = project.Activities.filter(a => a.todoStatus === 'On Progress')
-    const doneTasks = project.Activities.filter(a => a.todoStatus === 'Done')
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8">
