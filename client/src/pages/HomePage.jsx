@@ -133,6 +133,7 @@ export default function HomePage() {
                                     <ProjectCard 
                                         project={project} 
                                         onStatusUpdate={fetchProjects}
+                                        onDelete={fetchProjects}
                                     />
                                 </div>
                             ))}
