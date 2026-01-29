@@ -6,7 +6,7 @@ export default function CreateProjectPage() {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        activities: [''] // Array untuk menyimpan multiple activities
+        activities: [''] 
     });
     const navigate = useNavigate();
 
@@ -44,14 +44,12 @@ export default function CreateProjectPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-              // PERBAIKAN: kirim formData sebagai body, bukan di config headers
             const response = await http.post('/projects', formData, {
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('access_token')}`
                 }
             });
 
-            // PERBAIKAN: http helper (axios) tidak pakai .ok, tapi cek status
             if (response.status === 201) {
                 navigate('/projects');
             }

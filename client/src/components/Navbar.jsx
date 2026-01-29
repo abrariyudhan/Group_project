@@ -4,10 +4,9 @@ import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router'
 
 export default function Navbar() {
-    const navigate = useNavigate() // untuk navigasi halaman
-    const location = useLocation() // untuk mendapatkan path saat ini
+    const navigate = useNavigate() 
+    const location = useLocation() 
 
-    // logout handler
     const handleLogout = () => {
         localStorage.removeItem('access_token')
         Swal.fire({
@@ -18,7 +17,7 @@ export default function Navbar() {
             showConfirmButton: false,
             timerProgressBar: true
         })
-        navigate('/login') // navigasi ke halaman login setelah logout
+        navigate('/login')
     }
 
     return (
@@ -82,6 +81,5 @@ export default function Navbar() {
                 </div>
             </div>
         </nav>
-        // end of navbar component
     )
 }
