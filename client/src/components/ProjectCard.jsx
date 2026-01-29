@@ -6,6 +6,59 @@ import { useState } from 'react'
 
 export default function ProjectCard({ project, onStatusUpdate }) {
   const navigate = useNavigate()
+  const [isUpdating, setIsUpdating] = useState(false)
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Done':
+        return 'bg-green-100 text-green-700 border-green-300'
+      case 'On Progress':
+        return 'bg-blue-100 text-blue-700 border-blue-300'
+      default:
+        return 'bg-yellow-100 text-yellow-700 border-yellow-300'
+    }
+  }
+
+  const handleStatusClick = async (e) => {
+    e.stopPropagation()
+    
+    if (isUpdating) return
+
+    const statusOptions = ['Not Started', 'On Progress', 'Done']
+    const currentIndex = statusOptions.indexOf(project.status)
+    const nextStatus = statusOptions[(currentIndex + 1) % statusOptions.length]
+
+    try {
+      setIsUpdating(true)
+      await http({
+        method: 'PATCH',
+        url: `/projects/${project.id}/status`,
+        data: { status: nextStatus },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        }
+      })
+
+      if (onStatusUpdate) onStatusUpdate()
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Status Updated!',
+        text: `Status changed to "${nextStatus}"`,
+        timer: 1500,
+        showConfirmButton: false
+      })
+    } catch (err) {
+      console.error(err)
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to update status',
+        text: err.response?.data?.message || 'Something went wrong'
+      })
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
   const handleDelete = async (e) => {
     e.stopPropagation()
