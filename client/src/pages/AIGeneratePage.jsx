@@ -1,4 +1,3 @@
-// aigeneratepage for generating project using AI
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import Navbar from '../components/Navbar'
@@ -7,11 +6,11 @@ import Swal from 'sweetalert2'
 import showError from '../helpers/errors'
 
 export default function AIGeneratePage() {
-    const [prompt, setPrompt] = useState('') // project description input
-    const [loading, setLoading] = useState(false) // loading state
-    const navigate = useNavigate() // for navigation
+    const [prompt, setPrompt] = useState('') 
+    const [loading, setLoading] = useState(false) 
+    const navigate = useNavigate() 
 
-    const handleSubmit = async (e) => { // handle untuk submit form
+    const handleSubmit = async (e) => {
         e.preventDefault()
         
         if (!prompt.trim()) {
@@ -26,11 +25,11 @@ export default function AIGeneratePage() {
 
         setLoading(true)
         try {
-            const { data } = await http.post('/projects/generate-ai', // endpoint untuk generate AI project
+            const { data } = await http.post('/projects/generate-ai', 
                 { prompt },
                 {
                     headers: {
-                        authorization: `Bearer ${localStorage.getItem('access_token')}`// ambil token dari local storage
+                        authorization: `Bearer ${localStorage.getItem('access_token')}`
                     }
                 }
             )
@@ -44,7 +43,6 @@ export default function AIGeneratePage() {
                 timerProgressBar: true
             })
 
-            // Redirect ke ProjectPage dengan project yang baru dibuat
             navigate(`/projects/${data.project.id}`)
         } catch (error) {
             showError(error)

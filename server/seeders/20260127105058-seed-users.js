@@ -5,12 +5,14 @@ const {hashPassword} = require('../helpers/bcrypt');
 module.exports = {
   async up (queryInterface, Sequelize) {
     const users = [
-      {
+      { 
+        username: 'adminuser',
         email: 'owner@example.com',
         password: '12345',
         role: 'owner',
       },
       {
+        username: 'collabuser',
         email: 'collaborator@example.com',
         password: '12345',
         role: 'collaborator',
