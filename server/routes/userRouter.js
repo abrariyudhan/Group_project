@@ -1,0 +1,10 @@
+// routes untuk user-related endpoints
+const express = require('express');
+const router = express.Router();
+const UserController = require('../controllers/userController');
+
+// Endpoint untuk registrasi dan login
+router.post('/register', UserController.register);
+router.post('/login', UserController.login);
+
+module.exports = router;
